@@ -1,0 +1,32 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<style>
+    .content{
+        margin: auto;
+        margin-top: 100px;
+        max-width: 900px;
+        text-align: center;
+        padding: 20px;
+        border: 1px solid;
+        border-radius: 20px;
+    }
+</style>
+
+<div class="container">
+    <div class="content">
+        {% if request.user.pro_pic %}
+        <img src="{{request.user.pro_pic.url}}" width="100px" alt="">
+        {% endif %}
+        <h1>Profile Update</h1>
+
+        <form  method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+                {{ form.as_p }}
+
+            <button type="submit" class="btn btn-info">Update</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}

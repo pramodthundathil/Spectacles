@@ -1,0 +1,20 @@
+{% extends 'index.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-8" id="cart_table">
+            {% include 'ajax/cart_items.html'%}
+        </div>
+        <!-- Cart Summary -->
+        <div class="col-md-4">
+            <div class="card p-3">
+                <h4>Cart Summary</h4>
+                <p><strong>Total Amount:</strong> ${{ carts.cart_total_price }}</p>
+                <a href="{%url 'order_creation' %}" class="btn btn-primary w-100">Proceed to Checkout</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

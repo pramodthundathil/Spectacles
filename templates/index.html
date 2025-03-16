@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ViewPoint - Premium Eyewear</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'css\styles.css' %}">
+
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">ViewPoint</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="{%url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'products' %}">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#virtual-try-on">Virtual Try-On</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'index' %}#about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{%url 'index' %}#contact">Contact</a>
+                    </li>
+                </ul>
+                <form class="d-flex me-2">
+                    <!-- <input class="form-control me-2" type="search" placeholder="Search frames...">
+                    <button class="btn btn-outline-light" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button> -->
+                </form>
+                <div class="d-flex align-items-center">
+                    {% if request.user.is_authenticated %}
+                    <a href="{%url 'user_profile_update' %}" class="btn btn-link text-white">
+                        <i class="fas fa-user"></i>
+                    </a>
+                    <a class="btn btn-link text-white" href="{%url 'signout' %}">Signout</a>
+                    <a class="btn btn-link text-white" href="{%url 'orders' %}">Orders</a>
+
+                    <a href="{%url 'cart' %}" class="btn btn-link text-white position-relative" id="cart-btn">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="cart-badge"></span>
+                    </a>
+                    {% else %}
+                    <a href="{%url 'signin' %}" class="btn btn-link text-white">
+                        <i class="fas fa-user"></i>Login
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+    {% block content %}
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container text-center">
+            <h1>See the World with Style</h1>
+            <p class="lead">Premium eyewear for every face and every occasion</p>
+            <a href="#products" class="btn btn-primary btn-lg mt-3">Shop Now</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="py-5 bg-white">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h4>Free Shipping</h4>
+                        <p>On all orders over $50</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon">
+                            <i class="fas fa-glasses"></i>
+                        </div>
+                        <h4>Virtual Try-On</h4>
+                        <p>See how you look before you buy</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-box">
+                        <div class="feature-icon">
+                            <i class="fas fa-undo"></i>
+                        </div>
+                        <h4>Easy Returns</h4>
+                        <p>30-day money-back guarantee</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-4">Featured Products</h2>
+
+            <!-- Categories Navigation -->
+            <!-- <ul class="nav nav-pills mb-4 justify-content-center category-nav">
+                <li class="nav-item">
+                    <a class="nav-link active" href="#">All</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Sunglasses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Eyeglasses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Reading Glasses</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Computer Glasses</a>
+                </li>
+            </ul> -->
+
+            <div class="row g-4">
+                <!-- Product 1 -->
+
+                {% for product in products %}
+                <div class="col-md-6 col-lg-3">
+                    <div class="card h-100">
+                        {% for item in product.images.all %}
+                        {% if item.is_primary %}
+                        <img src="{{ item.image.url }}" class="card-img-top" alt="Sunglasses">
+
+                        <!-- <img src="" class="card-img-top" style="height: 200px;object-fit: cover;" alt="{{ product.name }}"> -->
+                        {% endif %}
+                        {% endfor %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ product.name }}</h5>
+                            <p class="card-text">{{ product.description }}</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="fw-bold mb-0">${{ product.price }}</p>
+                                <div>
+                                    <a href="{%url 'virtual_try' product.id  %}" class="btn btn-sm btn-outline-secondary me-1 quick-view-btn" data-id="1">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a class="btn btn-sm btn-primary add-to-cart-btn" href="{%url 'add_to_cart' product.id %}" data-id="1">
+                                        <i class="fas fa-shopping-cart"></i> Add
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+               
+            </div>
+
+            <div class="text-center mt-4">
+                <a href="#" class="btn btn-outline-primary">View All Products</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Virtual Try-On Section -->
+    <section id="virtual-try-on" class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-4">Virtual Try-On</h2>
+            <p class="text-center mb-5">See how our glasses look on you before you buy!</p>
+
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <div class="virtual-try-on">
+                        <img src="{%static 'images\glass.jpg' %}" class="face-img" alt="Model face">
+                        <img src="{%static 'images\with_glass.jpg' %}" style="height: 300px;object-fit: cover;"
+                            class="glasses-img" alt="Glasses overlay">
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <h3>How It Works</h3>
+                    <ol class="list-group list-group-numbered mb-4">
+                        <li class="list-group-item border-0 bg-transparent">Take or upload a front-facing photo</li>
+                        <li class="list-group-item border-0 bg-transparent">Select the glasses you want to try</li>
+                        <li class="list-group-item border-0 bg-transparent">See how they look on your face</li>
+                        <li class="list-group-item border-0 bg-transparent">Adjust the fit and size as needed</li>
+                        <li class="list-group-item border-0 bg-transparent">Add to cart if you like what you see!</li>
+                    </ol>
+                    <div class="d-flex">
+                        <button class="btn btn-primary me-2">Upload Photo</button>
+                        <button class="btn btn-outline-primary">Use Camera</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4 mb-lg-0">
+                    <h2>About ViewPoint</h2>
+                    <p>We're passionate about providing high-quality eyewear that combines style, comfort, and
+                        functionality. Our mission is to help you see better and look better.</p>
+                    <p>Founded in 2015, ViewPoint has grown to become a trusted name in the eyewear industry. We offer a
+                        wide range of sunglasses, eyeglasses, reading glasses, and computer glasses for men, women, and
+                        children.</p>
+                    <p>All our products are crafted with premium materials and undergo rigorous quality tests to ensure
+                        durability and comfort.</p>
+                    <a href="#" class="btn btn-primary">Learn More</a>
+                </div>
+                <div class="col-lg-6">
+                    <img src="{%static 'images\about.jpg' %}" alt="About ViewPoint" class="img-fluid rounded"
+                        style="width: 100%;object-fit: cover;">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <h2 class="text-center mb-5">What Our Customers Say</h2>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="card-text">"I love my new glasses! The virtual try-on feature was incredibly
+                                helpful in choosing the right frame for my face. The delivery was fast and the quality
+                                is excellent."</p>
+                            <p class="fw-bold mb-0">- Sarah J.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                            </div>
+                            <p class="card-text">"The blue light filtering glasses have really helped reduce my eye
+                                strain during long work days. Customer service was excellent when I needed help with
+                                sizing."</p>
+                            <p class="fw-bold mb-0">- Michael T.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star text-warning"></i>
+                                <i class="fas fa-star-half-alt text-warning"></i>
+                            </div>
+                            <p class="card-text">"I've purchased multiple pairs from ViewPoint and I'm always impressed
+                                with the quality and style. The virtual try-on is a game-changer for online shopping!"
+                            </p>
+                            <p class="fw-bold mb-0">- Emily R.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-5">
+        <div class="container">
+            <h2 class="text-center mb-5">Contact Us</h2>
+            <div class="row">
+
+                <div class="col-md-12">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h5 class="card-title">Our Information</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-3">
+                                    <i class="fas fa-map-marker-alt me-2 text-primary"></i> 123 Vision Street, Eyewear
+                                    City, EC 12345
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-phone me-2 text-primary"></i> (555) 123-4567
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-envelope me-2 text-primary"></i> info@viewpoint.com
+                                </li>
+                                <li class="mb-3">
+                                    <i class="fas fa-clock me-2 text-primary"></i> Monday - Friday: 9AM - 6PM
+                                </li>
+                            </ul>
+                            <h5 class="mt-4">Follow Us</h5>
+                            <div class="d-flex">
+                                <a href="#" class="me-3 text-primary"><i class="fab fa-facebook-f fa-lg"></i></a>
+                                <a href="#" class="me-3 text-primary"><i class="fab fa-twitter fa-lg"></i></a>
+                                <a href="#" class="me-3 text-primary"><i class="fab fa-instagram fa-lg"></i></a>
+                                <a href="#" class="text-primary"><i class="fab fa-pinterest fa-lg"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endblock %}
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>ViewPoint</h5>
+                    <p>Premium eyewear for every face and every occasion.</p>
+                    <div class="d-flex">
+                        <a href="#" class="me-3"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Shop</h5>
+                    <ul>
+                        <li><a href="#">Sunglasses</a></li>
+                        <li><a href="#">Eyeglasses</a></li>
+                        <li><a href="#">Reading Glasses</a></li>
+                        <li><a href="#">Computer Glasses</a></li>
+                        <li><a href="#">Accessories</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                    <h5>Help</h5>
+                    <ul>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Shipping & Returns</a></li>
+                        <li><a href="#">Order Tracking</a></li>
+                        <li><a href="#">Size Guide</a></li>
+                        <li><a href="#">Contact Us</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-6">
+                    <h5>Subscribe</h5>
+                    <p>Sign up for our newsletter to receive updates and special offers.</p>
+                    <form>
+                        <div class="input-group mb-3">
+                            <input type="email" class="form-control" placeholder="Your email">
+                            <button class="btn btn-primary" type="button">Subscribe</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <hr class="my-4 bg-light">
+            <div class="row">
+                <div class="col-md-6 mb-3 mb-md-0">
+                    <p class="mb-0">&copy; 2025 ViewPoint. All rights reserved.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <a href="#" class="text-white me-3">Privacy Policy</a>
+                    <a href="#" class="text-white me-3">Terms of Service</a>
+                    <a href="#" class="text-white">Cookie Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

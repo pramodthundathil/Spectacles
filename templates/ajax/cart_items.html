@@ -1,0 +1,70 @@
+<!-- Product List -->
+
+<h2>Shopping Cart</h2>
+{% for message in messages %}
+
+<p class="text-danger">
+    {{message}}
+</p>
+
+{% endfor %}
+<table class="table">
+    <thead>
+        <tr>
+            <th>Product</th>
+            <th>Price</th>
+            <th>Quantity</th>
+            <th>Total</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in carts.user_cart.all %}
+        <tr>
+            <td>{{ item.product.name }}</td>
+            <td>${{ item.product.price }}</td>
+            <td>
+                <button id="decrease" data-product="{{item.id}}" class="btn btn-sm btn-danger decrease">-</button>
+                {{ item.quantity }}
+                <button id="increase" data-product="{{item.id}}" class="btn btn-sm btn-success increase">+</button>
+            </td>
+            <td>${{ item.price }}</td>
+            <td><a href="{%url 'delete_cart_item' item.id %}" class="btn btn-sm btn-danger">Remove</a></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script>
+$(document).ready(function () {
+    console.log("working");
+
+    // Use event delegation to attach event listeners to dynamically generated elements
+    $("#cart_table").on("click", ".increase, .decrease", function () {
+        var button = $(this);
+        var cart_item_id = button.data("product");
+        var action = button.hasClass("increase") ? "increase" : "decrease";
+
+        $.ajax({
+            url: "{% url 'update_cart' %}",
+            type: "POST",
+            data: {
+                cart_item_id: cart_item_id,
+                action: action,
+                csrfmiddlewaretoken: "{{ csrf_token }}"
+            },
+            success: function (response) {
+                console.log("Function is working");
+                if (response.success) {
+                    console.log(response);
+                    $("#cart_table").html(response.html); // Update the cart
+                }
+            },
+            error: function (xhr, status, error) {
+                console.log("Error:", error);
+            }
+        });
+    });
+});
+</script>
